@@ -20,7 +20,7 @@ for r in r1 r2 r3 r4; do
     # 2. Classe para tráfego prioritário (portas 12345 e 12346) – até 90 Mbps
     mnexec -a "$pid" tc class add dev "$intf" parent 1:1 classid 1:10 htb rate 90mbit ceil 100mbit prio 0
 
-    # 3. Classe para tráfego iperf (porta 5201) – exatamente 5 Mbps
+    # 3. Classe para tráfego iperf (porta 5001) – exatamente 5 Mbps
     mnexec -a "$pid" tc class add dev "$intf" parent 1:1 classid 1:20 htb rate 5mbit ceil 5mbit prio 1
 
     # 4. Classe padrão para o restante – usa o restante (5 Mbps, sem prioridade)
@@ -31,7 +31,7 @@ for r in r1 r2 r3 r4; do
     mnexec -a "$pid" tc filter add dev "$intf" protocol ip parent 1: prio 1 u32 match ip dport 12345 0xffff flowid 1:10
     mnexec -a "$pid" tc filter add dev "$intf" protocol ip parent 1: prio 1 u32 match ip dport 12346 0xffff flowid 1:10
 
-    #  Tráfego iperf → porta 5201
+    #  Tráfego iperf → porta 5001
     mnexec -a "$pid" tc filter add dev "$intf" protocol ip parent 1: prio 2 u32 match ip dport 5001 0xffff flowid 1:20
 
     #  Todo o restante → classe padrão
